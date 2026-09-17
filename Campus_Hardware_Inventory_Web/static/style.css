@@ -1,0 +1,113 @@
+:root {
+  --bg-main: #131314;
+  --bg-card: #1e1f20;
+  --fg-text: #e3e3e3;
+  --fg-muted: #8e918f;
+  --border-color: #444746;
+  --accent-blue: #a8c7fa;
+  --btn-primary: #1a3b66;
+  --btn-primary-fg: #c2e7ff;
+  --btn-danger: #4a121a;
+  --btn-danger-fg: #f2b8b5;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--fg-text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar h1 {
+  font-size: 1.25rem;
+  color: var(--accent-blue);
+  margin: 0;
+}
+
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.card h3 {
+  margin-top: 0;
+  font-size: 0.9rem;
+  color: var(--fg-muted);
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: var(--accent-blue);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-card);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background-color: #28292a;
+  color: var(--accent-blue);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary { background-color: var(--btn-primary); color: var(--btn-primary-fg); }
+.btn-danger { background-color: var(--btn-danger); color: var(--btn-danger-fg); }
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.alert-success { background-color: #1c3b2b; color: #6dd58c; border: 1px solid #2e7d32; }
+.alert-danger { background-color: var(--btn-danger); color: var(--btn-danger-fg); border: 1px solid #8c1d1d; }
+.alert-warning { background-color: #3d3210; color: #e2c542; border: 1px solid #7d6608; }

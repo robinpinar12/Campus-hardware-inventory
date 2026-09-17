@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card-grid">
+    <div class="card">
+        <h3>Total Stocks</h3>
+        <p>{{ total_stocks }}</p>
+    </div>
+    <div class="card">
+        <h3>Account Role</h3>
+        <p>{{ session.role }}</p>
+    </div>
+    <div class="card">
+        <h3>Borrowed Items</h3>
+        <p>{{ active_loans|length if session.role == 'USER' else all_loans|length }}</p>
+    </div>
+    <div class="card">
+        <h3>Pending Borrow Requests</h3>
+        <p>{{ pending_borrow_requests|length if session.role == 'USER' else pending_borrows|length }}</p>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>Hardware Catalog</h2>
+    <form method="GET" action="{{ url_for('dashboard') }}" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search hardware..." style="padding: 0.5rem; flex: 1;">
+        <select name="category" style="padding: 0.5rem;">
+            <option value="ALL">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                {% if session.role == 'USER' %}<th>Action</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+                <td>{{ item[4] }}</td>
+                {% if session.role == 'USER' %}
+                <td>
+                    {% if item[3] > 0 %}
+                    <form method="POST" action="{{ url_for('borrow') }}" style="display: flex; gap: 0.5rem;">
+                        <input type="hidden" name="item_id" value="{{ item[0] }}">
+                        <input type="number" name="quantity" value="1" min="1" max="{{ item[3] }}" style="width: 60px;">
+                        <button type="submit" class="btn btn-primary">Borrow</button>
+                    </form>
+                    {% else %}
+                    <span style="color: var(--fg-muted);">Out of Stock</span>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if session.role == 'ADMIN' %}
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>Add New Equipment</h2>
+    <form method="POST" action="{{ url_for('admin_add') }}" style="display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 1rem;">
+        <input type="text" name="item_name" placeholder="Item Name" required style="padding: 0.5rem;">
+        <input type="text" name="category" placeholder="Category" required style="padding: 0.5rem;">
+        <input type="number" name="quantity" placeholder="Quantity" required style="padding: 0.5rem;">
+        <input type="number" step="0.01" name="unit_price" placeholder="Unit Price" style="padding: 0.5rem;">
+        <button type="submit" class="btn btn-primary">Add Item</button>
+    </form>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>Pending Borrow Requests</h2>
+    <form method="POST" action="{{ url_for('admin_borrow_action') }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Req ID</th>
+                    <th>Student</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Requested At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in pending_borrows %}
+                <tr>
+                    <td><input type="checkbox" name="loan_ids" value="{{ req[0] }}"></td>
+                    <td>{{ req[0] }}</td>
+                    <td>{{ req[1] }}</td>
+                    <td>{{ req[2] }}</td>
+                    <td>{{ req[3] }}</td>
+                    <td>{{ req[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" name="action" value="approve" class="btn btn-primary">Approve Selected</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject Selected</button>
+    </form>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>Pending Return Requests</h2>
+    <form method="POST" action="{{ url_for('admin_return_action') }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Req ID</th>
+                    <th>Student</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Start Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in pending_returns %}
+                <tr>
+                    <td><input type="checkbox" name="loan_ids" value="{{ req[0] }}"></td>
+                    <td>{{ req[0] }}</td>
+                    <td>{{ req[1] }}</td>
+                    <td>{{ req[2] }}</td>
+                    <td>{{ req[3] }}</td>
+                    <td>{{ req[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" name="action" value="approve" class="btn btn-primary">Approve Return</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject Return</button>
+    </form>
+</div>
+{% else %}
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>My Borrowed Items</h2>
+    <form method="POST" action="{{ url_for('return_request') }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Loan ID</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Start Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in active_loans %}
+                <tr>
+                    <td><input type="checkbox" name="loan_ids" value="{{ loan[0] }}"></td>
+                    <td>{{ loan[0] }}</td>
+                    <td>{{ loan[1] }}</td>
+                    <td>{{ loan[2] }}</td>
+                    <td>{{ loan[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Request Return for Selected</button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}
