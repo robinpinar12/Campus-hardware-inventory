@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 400px; margin: 4rem auto;" class="card">
+    <h2>Password Reset Request</h2>
+    <form method="POST" action="{{ url_for('reset_request') }}">
+        <div style="margin-bottom: 1rem;">
+            <label>Username</label>
+            <input type="text" name="username" required style="width: 100%; padding: 0.5rem;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>Registered Email</label>
+            <input type="email" name="email" required style="width: 100%; padding: 0.5rem;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>New Password</label>
+            <input type="password" name="new_password" required style="width: 100%; padding: 0.5rem;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>Confirm New Password</label>
+            <input type="password" name="confirm_password" required style="width: 100%; padding: 0.5rem;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Reset Request</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 400px; margin: 4rem auto;" class="card">
+    <h2>User Registration</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+        <div style="margin-bottom: 1rem;">
+            <label>Username</label>
+            <input type="text" name="username" required style="width: 100%; padding: 0.5rem;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>Email Address</label>
+            <input type="email" name="email" required style="width: 100%; padding: 0.5rem;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>Account Role</label>
+            <select name="role" style="width: 100%; padding: 0.5rem;">
+                <option value="USER">USER</option>
+                <option value="ADMIN">ADMIN</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>Password</label>
+            <input type="password" name="password" required style="width: 100%; padding: 0.5rem;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+    </form>
+</div>
+{% endblock %}
