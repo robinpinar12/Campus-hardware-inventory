@@ -1,25 +1,46 @@
-{% extends "base.html" %}
-{% block title %}Verify Email | Laboratory System{% endblock %}
-{% block content %}
-<section class="auth-page">
-  <div class="auth-card" style="margin: 0 auto; max-width: 440px;">
-    <div class="card-heading">
-      <p class="eyebrow">TWO-STEP VERIFICATION</p>
-      <h2>Verify Your Email</h2>
-      <p class="muted">Enter the 6-digit code sent to your email address.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Campus Hardware Inventory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background-color: #121212; color: #ffffff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+
+    <div style="background-color: #1e1e1e; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center;">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div style="background-color: #1f6feb; color: white; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 14px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h4 style="color: #888; font-size: 12px; margin-bottom: 5px; letter-spacing: 1px;">TWO-STEP VERIFICATION</h4>
+        <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 24px;">Verify Your Email</h2>
+        
+        <p style="color: #bbb; font-size: 14px; margin-bottom: 20px;">Enter the 6-digit code sent to your email address.</p>
+
+        <form method="POST" action="">
+            <div style="margin-bottom: 20px; text-align: left;">
+                <label for="otp" style="display: block; font-size: 14px; margin-bottom: 8px; color: #ddd;">Enter 6-Digit Code</label>
+                <input type="text" id="otp" name="otp" required maxlength="6" autocomplete="one-time-code" placeholder="123456" 
+                    style="width: 100%; padding: 12px; background-color: #2d2d2d; border: 1px solid #444; border-radius: 6px; color: white; font-size: 18px; text-align: center; letter-spacing: 4px; box-sizing: border-box;">
+            </div>
+
+            <button type="submit" style="background-color: #2ea043; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; font-size: 16px; transition: background-color 0.2s;">
+                Verify Code &rarr;
+            </button>
+        </form>
+
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('login') }}" style="color: #58a6ff; text-decoration: none; font-size: 14px;">&larr; Back to Login</a>
+        </div>
     </div>
-    <form method="post" class="auth-form">
-      <label for="otp_code">Enter 6-Digit Code</label>
-      <div class="input-wrap">
-        <span>🔢</span>
-        <input id="otp_code" name="otp_code" maxlength="6" pattern="\d{6}" placeholder="123456" required autofocus style="letter-spacing: 4px; font-size: 1.2rem; font-weight: bold; text-align: center;">
-      </div>
-      <button class="primary wide" type="submit">Verify Code <span>→</span></button>
-    </form>
-    
-    <div style="margin-top: 20px; text-align: center;">
-      <a href="{{ url_for('login') }}" style="font-size: 0.9rem; color: #007bff; text-decoration: none; font-weight: bold;">← Back to Login</a>
-    </div>
-  </div>
-</section>
-{% endblock %}
+
+</body>
+</html>
