@@ -231,4 +231,4 @@ class AuthController:
     def register_user(username, email, password, role="User"):
         db = DatabaseManager()
         auth_system = AuthSystem(db)
-        return auth_system.register(username, email, password, role)
+        return auth_system.register_user(username, email, password, role)
