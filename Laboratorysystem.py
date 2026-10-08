@@ -218,3 +218,11 @@ class InventoryManager:
 
     def get_all_hardware(self):
         return self.db.query_all("SELECT * FROM hardware ORDER BY item_id ASC")
+    
+class AuthController:
+    def __init__(self, auth_system):
+        self.auth_system = auth_system
+
+    def verify_otp(self, email, otp):
+        # Add your OTP verification logic here
+        pass
