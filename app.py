@@ -1,6 +1,8 @@
 import os
 import csv
 import io
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, session, Response
 from Laboratorysystem import DatabaseManager, AuthSystem, InventoryManager, AuthController
@@ -20,20 +22,26 @@ SMTP_LOGIN = "bd2e52001@smtp-brevo.com"
 SMTP_PASSWORD = "bskiMPbwNPRyOyb"  
 
 def send_otp_email(receiver_email, otp, intent):
-    """Sends a 6-digit OTP using Brevo SMTP."""
-    msg = MIMEText(f"Your {intent} One-Time Password (OTP) is: {otp}\n\nPlease enter this code to proceed. Do not share this code with anyone.")
-    msg['Subject'] = f"Laboratory System - {intent} OTP"
-    msg['From'] = "your-actual-email@gmail.com"  # Replace with your verified Brevo email
-    msg['To'] = receiver_email
+    """Sends a 6-digit OTP using Brevo HTTP API."""
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = os.getenv("BREVO_API_KEY")
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
     
+    subject = f"Laboratory System - {intent} OTP"
+    sender = {"name": "Campus Hardware", "email": "your-verified-email@gmail.com"} # Replace with your verified Brevo sender email
+    html_content = f"<p>Your {intent} One-Time Password (OTP) is: <strong>{otp}</strong></p><p>Please enter this code to proceed.</p>"
+    to = [{"email": receiver_email}]
+    
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        to=to, html_content=html_content, sender=sender, subject=subject
+    )
+
     try:
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_LOGIN, SMTP_PASSWORD)
-            server.send_message(msg)
+        api_instance.send_transac_email(send_smtp_email)
         return True
-    except Exception as e:
-        print(f"Email Error: {e}")
+    except ApiException as e:
+        print(f"Exception when calling SmtpApi->send_transac_email: {e}")
         return False
 
 db_mgr = DatabaseManager()
