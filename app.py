@@ -3,7 +3,7 @@ import csv
 import io
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, session, Response
-from Laboratorysystem import DatabaseManager, AuthSystem, InventoryManager
+from Laboratorysystem import DatabaseManager, AuthSystem, InventoryManager, AuthController
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "campus_inventory_secret_key_123")
