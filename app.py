@@ -29,7 +29,7 @@ def send_otp_email(receiver_email, otp, intent):
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
     
     subject = f"Laboratory System - {intent} OTP"
-    sender = {"name": "Campus Hardware", "email": "your-verified-email@gmail.com"} # Replace with your verified Brevo sender email
+    sender = {"name": "Campus Hardware", "email": "robinpinar12@gmail.com"} # Replace with your verified Brevo sender email
     html_content = f"<p>Your {intent} One-Time Password (OTP) is: <strong>{otp}</strong></p><p>Please enter this code to proceed.</p>"
     to = [{"email": receiver_email}]
     
