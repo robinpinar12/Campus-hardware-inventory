@@ -129,7 +129,8 @@ def verify_otp(action):
         return redirect(url_for("login"))
         
     if request.method == "POST":
-        user_otp = request.form.get("otp_code", "").strip()
+        # Fixed: changed 'otp_code' to 'otp' to match otp_verify.html input name
+        user_otp = request.form.get("otp", "").strip()
         data = session[session_key]
         
         if user_otp == data['otp']:
