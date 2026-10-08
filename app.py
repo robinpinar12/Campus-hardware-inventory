@@ -141,14 +141,15 @@ def verify_otp(action):
                 return redirect(url_for("login"))
                 
             elif action == "reset":
-                # OTP matches, handle password reset request insertion without request_date
+                 # OTP matches, handle password reset request insertion with timestamp
                 p = db_mgr.is_postgres
                 new_hash = auth_sys.hash_password(data['new_password'])
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-                # Insert into password_resets table using only existing columns
-                query = ("INSERT INTO password_resets (username, email, new_password_hash, status) VALUES (%s, %s, %s, 'PENDING')" 
-                        if p else "INSERT INTO password_resets (username, email, new_password_hash, status) VALUES (?, ?, ?, 'PENDING')")
-                db_mgr.execute(query, (data['username'], data['email'], new_hash))
+                # Insert into password_resets table including the required timestamp/date column
+                query = ("INSERT INTO password_resets (username, email, new_password_hash, request_time, status) VALUES (%s, %s, %s, %s, 'PENDING')" 
+                         if p else "INSERT INTO password_resets (username, email, new_password_hash, request_time, status) VALUES (?, ?, ?, ?, 'PENDING')")
+                db_mgr.execute(query, (data['username'], data['email'], new_hash, now))
     
                 session.pop(session_key, None)
                 flash("Email verified! Your password reset request has been submitted to admin.", "success")
