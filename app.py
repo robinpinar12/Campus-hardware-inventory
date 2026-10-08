@@ -129,7 +129,6 @@ def verify_otp(action):
         return redirect(url_for("login"))
         
     if request.method == "POST":
-        # Fixed: changed 'otp_code' to 'otp' to match otp_verify.html input name
         user_otp = request.form.get("otp", "").strip()
         data = session[session_key]
         
@@ -142,10 +141,18 @@ def verify_otp(action):
                 return redirect(url_for("login"))
                 
             elif action == "reset":
-                # OTP matches, submit the reset request to Admin
-                ok, msg = AuthController.submit_password_reset_request(data['username'], data['email'], data['new_password'])
+                # OTP matches, handle password reset request insertion directly
+                p = db_mgr.is_postgres
+                new_hash = auth_sys.hash_password(data['new_password'])
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Insert into password_resets table
+                query = ("INSERT INTO password_resets (username, email, new_password_hash, request_date, status) VALUES (%s, %s, %s, %s, 'PENDING')" 
+                         if p else "INSERT INTO password_resets (username, email, new_password_hash, request_date, status) VALUES (?, ?, ?, ?, 'PENDING')")
+                db_mgr.execute(query, (data['username'], data['email'], new_hash, now))
+                
                 session.pop(session_key, None)
-                flash("Email verified! Your password reset request has been submitted.", "success" if ok else "danger")
+                flash("Email verified! Your password reset request has been submitted to admin.", "success")
                 return redirect(url_for("login"))
         else:
             flash("Invalid OTP code. Try again.", "danger")
