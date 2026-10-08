@@ -226,3 +226,9 @@ class AuthController:
     def verify_otp(self, email, otp):
         # Add your OTP verification logic here
         pass
+
+    @staticmethod
+    def register_user(username, email, password, role="User"):
+        db = DatabaseManager()
+        auth_system = AuthSystem(db)
+        return auth_system.register(username, email, password, role)
